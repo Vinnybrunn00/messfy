@@ -1,0 +1,57 @@
+{
+    // Use o IntelliSense para saber mais sobre os atributos possíveis.
+    // Focalizar para exibir as descrições dos atributos existentes.
+    // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Windows",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "windows",
+        },
+
+        {
+            "name": "23021RAAEG-mae",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "192.168.0.103:5555",
+        },
+
+        {
+            "name": "23021RAAEG-pai",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "192.168.0.101:5555",
+        },
+
+        {
+            "name": "messfy",
+            "request": "launch",
+            "type": "dart"
+        },
+
+        {
+            "name": "messfy (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "messfy (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "All Devices",
+            "configurations": [
+                "23021RAAEG-mae",
+                "Windows"
+            ]
+        }
+    ]
+}
