@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:messfy/constants/constants_colors.dart';
+import 'package:messfy/constants/constants_value.dart';
 
 class BoxAuth extends StatefulWidget {
   final List<Widget> children;
@@ -22,8 +23,16 @@ class _BoxAuthState extends State<BoxAuth> {
       child: AnimatedContainer(
         padding: EdgeInsets.only(left: 15, right: 15),
         duration: Duration(milliseconds: 650),
-        height: size.height * (widget.isLogin ? .52 : .6),
-        width: size.width * .8,
+        height:
+            size.height *
+            (isMobile.value
+                ? widget.isLogin
+                    ? .52
+                    : .6
+                : widget.isLogin
+                ? .6
+                : .75),
+        width: size.width * (isMobile.value ? .8 : .65),
         decoration: BoxDecoration(
           color: AppColors.blackBlueColor,
           borderRadius: BorderRadius.circular(18),

@@ -7,4 +7,5 @@ class AppColors {
   static Color greenColor = const Color(0xff33d2a4);
   static Color greyColor = const Color(0xff919fae);
   static Color purpleColor = const Color(0xff5e17eb);
+  static Color foo = const Color(0xff37415c);
 }

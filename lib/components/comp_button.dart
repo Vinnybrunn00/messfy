@@ -14,12 +14,12 @@ class CompButton extends StatefulWidget {
 
 class _CompButtonState extends State<CompButton> {
   bool get containsPass {
-    return widget.title.contains('password');
+    return widget.title.toLowerCase().contains('password');
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: widget.onTap,
       child: Row(
         mainAxisAlignment:

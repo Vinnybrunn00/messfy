@@ -7,12 +7,14 @@ class CompInput extends StatefulWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final String labelText;
+  final void Function(String)? onChanged;
 
   const CompInput({
     super.key,
     this.controller,
     this.validator,
     required this.labelText,
+    this.onChanged,
   });
 
   @override
@@ -29,15 +31,25 @@ class _CompInputState extends State<CompInput> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: widget.onChanged,
       scrollPadding: EdgeInsets.all(20),
       controller: widget.controller,
       validator: widget.validator,
       cursorColor: AppColors.whiteColor,
       style: TextStyle(color: AppColors.whiteColor),
-      cursorWidth: 1,
 
+      cursorWidth: 1,
       decoration: InputDecoration(
         labelText: widget.labelText,
+        errorStyle: TextStyle(color: Colors.amberAccent),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: AppStyle.borderRadius12,
+          borderSide: BorderSide(color: Colors.yellowAccent),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: AppStyle.borderRadius12,
+          borderSide: BorderSide(color: const Color(0x5FFFFF00)),
+        ),
         labelStyle: TextStyle(
           fontSize: 12.5,
           color: AppColors.cyanColor,
@@ -50,7 +62,7 @@ class _CompInputState extends State<CompInput> {
         border: OutlineInputBorder(borderRadius: AppStyle.borderRadius12),
         suffixIcon:
             containsPassword
-                ? GestureDetector(
+                ? InkWell(
                   onTap: () {
                     setState(() {
                       isVisibily = !isVisibily;

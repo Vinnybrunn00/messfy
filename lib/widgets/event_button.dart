@@ -6,12 +6,14 @@ class EventButton extends StatefulWidget {
   final void Function()? onTap;
   final String title;
   final bool isLoading;
+  final bool? onTapEnabled;
 
   const EventButton({
     super.key,
     this.onTap,
     required this.title,
     required this.isLoading,
+    this.onTapEnabled,
   });
 
   @override
@@ -19,6 +21,14 @@ class EventButton extends StatefulWidget {
 }
 
 class _EventButtonState extends State<EventButton> {
+  Color? get _buttonEnabled {
+    if (widget.onTapEnabled != null) {
+      if (!widget.onTapEnabled!) return const Color(0x86068FFF);
+      return AppColors.cyanColor;
+    }
+    return AppColors.cyanColor;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -33,7 +43,7 @@ class _EventButtonState extends State<EventButton> {
           borderRadius: AppStyle.borderRadius12,
           child: Ink(
             decoration: BoxDecoration(
-              color: AppColors.cyanColor,
+              color: _buttonEnabled,
               borderRadius: AppStyle.borderRadius12,
             ),
             child: Center(
