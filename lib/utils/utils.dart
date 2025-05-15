@@ -1,4 +1,4 @@
-
+import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +9,12 @@ import 'package:messfy/constants/constants_value.dart';
 import 'package:messfy/home/home_page.dart';
 import 'package:messfy/pages/auth_page.dart';
 import 'package:messfy/styles/style_app.dart';
+import 'package:messfy/users/users_provider.dart';
+import 'package:messfy/utils/routers.dart';
 
 class Utils {
+  UsersProvider usersProvider = UsersProvider();
+
   static StreamBuilder chooseRoute(BuildContext context) {
     return StreamBuilder(
       stream: FirebaseAuth.instance.userChanges(),
@@ -59,58 +63,6 @@ class Utils {
     return r;
   }
 
-  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
-  buttonSheetOptions(BuildContext context, {void Function()? onVisible}) {
-    return ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        padding: EdgeInsets.all(0),
-        onVisible: onVisible,
-        duration: Duration(minutes: 5),
-        content: Container(
-          decoration: BoxDecoration(
-            color: AppColors.foo,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(width: 0.1),
-          ),
-          child: Column(
-            children:
-                _setListTiles(context)
-                    .map(
-                      (Map<String, dynamic> e) => ListTile(
-                        leading: Icon(
-                          e['icon'],
-                          color: AppColors.whiteColor,
-                          size: 23,
-                        ),
-                        title: Text(
-                          e['title'],
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: AppColors.whiteColor,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        subtitle: Text(
-                          e['subtitle'],
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.greyColor,
-                          ),
-                        ),
-
-                        onTap: e['onTap'],
-                      ),
-                    )
-                    .toList(),
-          ),
-        ),
-        backgroundColor: Colors.transparent,
-        behavior: SnackBarBehavior.floating,
-        elevation: 0,
-      ),
-    );
-  }
-
   static void goNamedRoute(BuildContext context, {required String route}) {
     Navigator.of(context).pushNamed(route);
   }
@@ -123,6 +75,93 @@ class Utils {
     DateTime dateTime = DateTime.now();
     String dateFormat = DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
     return dateFormat;
+  }
+
+  static void showModal(BuildContext context, Size size) {
+    TextEditingController controller = TextEditingController();
+
+    showModalBottomSheet(
+      backgroundColor: AppColors.foo,
+      showDragHandle: true,
+      context: context,
+      builder:
+          (context) => Container(
+            padding: EdgeInsets.only(left: 8, right: 8, bottom: 30),
+            height: size.height,
+            width: size.width,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Alterar name da conta',
+                  style: TextStyle(color: AppColors.whiteColor, fontSize: 18),
+                ),
+                TextFormField(controller: controller),
+                SizedBox(height: 10),
+                InkWell(
+                  onTap: () {
+                    UsersProvider.changeName(controller.text).then((event) {
+                      if (event != null) {
+                        log(event);
+                        return;
+                      }
+                      if (!context.mounted) return;
+                      Utils.goNamedRoute(context, route: AppRoute.home);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Container(
+                            padding: EdgeInsets.only(left: 8, right: 8),
+
+                            height: 55,
+                            width: size.width * .6,
+                            decoration: BoxDecoration(
+                              color: AppColors.foo,
+                              borderRadius: AppStyle.borderRadius12,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.check, color: AppColors.greenColor),
+                                SizedBox(width: 5),
+                                Text(
+                                  'Nome alterado com sucesso!',
+                                  style: TextStyle(
+                                    color: AppColors.whiteColor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          backgroundColor: Colors.transparent,
+                          behavior: SnackBarBehavior.floating,
+                          elevation: 0,
+                        ),
+                      );
+                    });
+                  },
+                  child: Container(
+                    height: 55,
+                    width: size.width,
+                    decoration: BoxDecoration(
+                      color: AppColors.cyanColor,
+                      borderRadius: AppStyle.borderRadius12,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Confirmar alterações',
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+    );
   }
 
   static ScaffoldFeatureController showErrorMessageFloating({
@@ -213,31 +252,49 @@ class Utils {
     }
   }
 
-  static List<Map<String, dynamic>> _setListTiles(BuildContext context) {
+  static void hidenSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(
+      context,
+    ).hideCurrentSnackBar(reason: SnackBarClosedReason.timeout);
+  }
+
+  static List<Map<String, dynamic>> setListTiles(BuildContext context) {
     return [
       {
         'icon': OctIcons.person,
         'title': 'Perfil',
         'subtitle': 'Altere seu nome ou mude a foto de perfil',
-        'onTap': () {},
+        'onTap': () {
+          hidenSnackBar(context);
+          goNamedRoute(context, route: AppRoute.profile);
+        },
       },
       {
         'icon': Icons.add_reaction_outlined,
         'title': 'Novos',
         'subtitle': 'Contas recem criadas no Messfy',
-        'onTap': () {},
+        'onTap': () {
+          hidenSnackBar(context);
+          goNamedRoute(context, route: AppRoute.news);
+        },
       },
       {
         'icon': EvaIcons.people_outline,
         'title': 'Comunidades',
         'subtitle': 'Diversas comunidade para conversar',
-        'onTap': () {},
+        'onTap': () {
+          hidenSnackBar(context);
+          goNamedRoute(context, route: AppRoute.community);
+        },
       },
       {
         'icon': FontAwesome.bug_solid,
         'title': 'Bugs',
         'subtitle': 'Relate algum bug encontrado no Messfy',
-        'onTap': () {},
+        'onTap': () {
+          hidenSnackBar(context);
+          goNamedRoute(context, route: AppRoute.reportBug);
+        },
       },
     ];
   }

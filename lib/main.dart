@@ -5,6 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:messfy/constants/constants_colors.dart';
 import 'package:messfy/home/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:messfy/pages/community_page.dart';
+import 'package:messfy/pages/news_page.dart';
+import 'package:messfy/pages/profile_page.dart';
+import 'package:messfy/pages/report_page.dart';
 import 'package:messfy/utils/utils.dart';
 import 'package:window_manager/window_manager.dart';
 import 'firebase_options.dart';
@@ -57,6 +61,10 @@ class MyApp extends StatelessWidget {
       routes: {
         AppRoute.node: (context) => Utils.chooseRoute(context),
         AppRoute.home: (context) => HomePage(),
+        AppRoute.profile: (context) => ProfilePage(),
+        AppRoute.news: (context) => NewsUsersPage(),
+        AppRoute.community: (context) => CommunityPage(),
+        AppRoute.reportBug: (context) => ReportBugPage(),
       },
     );
   }

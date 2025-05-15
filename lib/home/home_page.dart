@@ -1,12 +1,13 @@
-
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
-
 import 'package:icons_plus/icons_plus.dart';
 import 'package:messfy/constants/constants_colors.dart';
 import 'package:messfy/constants/constants_value.dart';
 import 'package:messfy/screens/chats_screen.dart';
 import 'package:messfy/screens/friends_screen.dart';
+import 'package:messfy/users/users_provider.dart';
+import 'package:messfy/utils/routers.dart';
 import 'package:messfy/utils/utils.dart';
 import 'package:messfy/widgets/box_photo.dart';
 
@@ -22,11 +23,90 @@ class _HomePageState extends State<HomePage>
   bool isAuth = true;
   int page = 0;
 
-  bool onVisible = false;
-
   late PageController pageController = PageController(initialPage: page);
 
   bool selectedd = false;
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> buttonSheetOptions(
+    BuildContext context, {
+    void Function()? onVisible,
+    void Function()? onTap,
+  }) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        padding: EdgeInsets.all(0),
+        onVisible: onVisible,
+        duration: Duration(hours: 2),
+        content: Container(
+          decoration: BoxDecoration(
+            color: AppColors.foo,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(width: 0.1),
+          ),
+          child: Column(
+            children:
+                Utils.setListTiles(context)
+                    .map(
+                      (Map<String, dynamic> e) => ListTile(
+                        leading: Icon(
+                          e['icon'],
+                          color: AppColors.whiteColor,
+                          size: 23,
+                        ),
+                        title: Text(
+                          e['title'],
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: AppColors.whiteColor,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        subtitle: Text(
+                          e['subtitle'],
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.greyColor,
+                          ),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            onVisibled.value = false;
+                          });
+                          switch (e['title'].toLowerCase()) {
+                            case 'perfil':
+                              Utils.hidenSnackBar(context);
+                              Utils.goNamedRoute(
+                                context,
+                                route: AppRoute.profile,
+                              );
+                            case 'novos':
+                              Utils.hidenSnackBar(context);
+                              Utils.goNamedRoute(context, route: AppRoute.news);
+                            case 'comunidades':
+                              Utils.hidenSnackBar(context);
+                              Utils.goNamedRoute(
+                                context,
+                                route: AppRoute.community,
+                              );
+                            case 'bugs':
+                              Utils.hidenSnackBar(context);
+                              Utils.goNamedRoute(
+                                context,
+                                route: AppRoute.reportBug,
+                              );
+                          }
+                        },
+                      ),
+                    )
+                    .toList(),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        behavior: SnackBarBehavior.floating,
+        elevation: 0,
+      ),
+    );
+  }
 
   void _switch() {
     setState(() {
@@ -85,23 +165,21 @@ class _HomePageState extends State<HomePage>
                 context,
               ).hideCurrentSnackBar(reason: SnackBarClosedReason.timeout);
               setState(() {
-                setState(() {
-                  onVisible = false;
-                });
+                onVisibled.value = false;
               });
             } else {
               _switch();
-              Utils.buttonSheetOptions(
+              buttonSheetOptions(
                 context,
                 onVisible: () {
                   setState(() {
-                    onVisible = true;
+                    onVisibled.value = true;
                   });
                 },
               ).closed.then((SnackBarClosedReason event) {
                 if (event.name == 'swipe') {
                   setState(() {
-                    onVisible = false;
+                    onVisibled.value = false;
                   });
                 }
               });
@@ -136,7 +214,7 @@ class _HomePageState extends State<HomePage>
                 return AnimatedSwitcher(
                   duration: Duration(milliseconds: 300),
                   child:
-                      onVisible
+                      onVisibled.value
                           ? Icon(Iconsax.add_bulk, key: ValueKey('a'))
                           : Icon(TeenyIcons.add, key: ValueKey('b')),
                   transitionBuilder: (
