@@ -1,4 +1,4 @@
-import 'dart:developer';
+
 
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -6,7 +6,6 @@ import 'package:messfy/constants/constants_colors.dart';
 import 'package:messfy/constants/constants_value.dart';
 import 'package:messfy/screens/chats_screen.dart';
 import 'package:messfy/screens/friends_screen.dart';
-import 'package:messfy/users/users_provider.dart';
 import 'package:messfy/utils/routers.dart';
 import 'package:messfy/utils/utils.dart';
 import 'package:messfy/widgets/box_photo.dart';

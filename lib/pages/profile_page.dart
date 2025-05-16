@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:messfy/constants/constants_colors.dart';
 import 'package:messfy/constants/constants_value.dart';
-import 'package:messfy/styles/style_app.dart';
 import 'package:messfy/users/users_provider.dart';
 import 'package:messfy/utils/utils.dart';
 import 'package:messfy/widgets/box_edit_profile.dart';
@@ -16,6 +15,9 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String? name, email, time;
+
+  List followers = [];
+  List following = [];
 
   late TextEditingController nameController;
   late TextEditingController emailController;
@@ -31,6 +33,8 @@ class _ProfilePageState extends State<ProfilePage> {
         name = value['name'];
         email = value['email'];
         time = value['time'];
+        followers = value['followers'];
+        following = value['following'];
       });
     });
     nameController = TextEditingController(text: name);
@@ -114,11 +118,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ],
                               ),
+                              Row(
+                                children: [
+                                  Text('${followers.length} Seguidores'),
+                                  SizedBox(width: 5),
+                                  Text('${following.length} Seguindo'),
+                                ],
+                              ),
                               Text(
                                 'Conta criada em ${time ?? '-'}',
                                 style: TextStyle(
                                   color: const Color(0xCDFFFF00),
-                                  fontSize: 12,
+                                  fontSize: 10,
                                 ),
                               ),
                             ],
