@@ -270,15 +270,6 @@ class Utils {
         },
       },
       {
-        'icon': Icons.add_reaction_outlined,
-        'title': 'Novos',
-        'subtitle': 'Contas recem criadas no Messfy',
-        'onTap': () {
-          hidenSnackBar(context);
-          goNamedRoute(context, route: AppRoute.news);
-        },
-      },
-      {
         'icon': EvaIcons.people_outline,
         'title': 'Comunidades',
         'subtitle': 'Diversas comunidade para conversar',

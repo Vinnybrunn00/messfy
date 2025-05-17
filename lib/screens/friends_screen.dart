@@ -14,22 +14,37 @@ class FriendsScreen extends StatefulWidget {
 class _FriendsScreenState extends State<FriendsScreen> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  String uid = '';
-
   UsersProvider users = UsersProvider();
 
-  void update() {
+  String uid = '';
+
+  bool isFollower = false;
+
+  List<Map<String, dynamic>> items = [];
+
+  Future<void> refresh() async {
     users.currentUser().then((currentUser) {
       setState(() {
         uid = currentUser['uid'];
       });
     });
+
+    List<Map<String, dynamic>> itemsTemp = [];
+    var get = await firestore.collection('users').get();
+
+    for (var item in get.docs) {
+      itemsTemp.add(item.data());
+    }
+
+    setState(() {
+      items = itemsTemp;
+    });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    refresh();
   }
 
   @override
@@ -37,35 +52,35 @@ class _FriendsScreenState extends State<FriendsScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
+
       body: Container(
         padding: EdgeInsets.only(left: 10, right: 10),
         height: size.height,
         width: size.width,
-        child: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder(
-                stream: firestore.collection('friends').snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    var docs = snapshot.data!.docs;
-                    return ListView.builder(
-                      itemCount: docs.length,
-                      itemBuilder: (context, index) {
-                        return BoxNewUser(
-                          name: docs[index]['name'],
-                          id: docs[index]['uid'],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await refresh();
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  clipBehavior: Clip.antiAlias,
+                  itemBuilder: (context, index) {
+                    return uid != items[index]['uid']
+                        ? BoxNewUser(
                           uid: uid,
-                          isFriends: true,
-                        );
-                      },
-                    );
-                  }
-                  return Text('error');
-                },
+                          id: items[index]['uid'],
+                          name: items[index]['name'],
+                        )
+                        : Container();
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

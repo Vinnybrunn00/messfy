@@ -110,7 +110,7 @@ class _BoxNewUserState extends State<BoxNewUser> {
                               setState(() {
                                 isFollower = !isFollower!;
                               });
-                              await user.setFollowerUser(widget.id);
+                              await user.setFollowerUser(widget.id, widget.uid);
 
                               _isFollower();
                             },

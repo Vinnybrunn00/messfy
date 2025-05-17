@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -82,21 +84,27 @@ class UsersProvider {
     }
   }
 
-  Future<void> setFollowerUser(String id) async {
+  Future<void> setFollowerUser(String id, String uid) async {
     CollectionReference<Map<String, dynamic>> usersCollections = firestore
         .collection('users');
 
-    DocumentSnapshot<Map<String, dynamic>> get =
-        await firestore.collection('users').doc(id).get();
+    DocumentSnapshot<Map<String, dynamic>> getUser =
+        await usersCollections.doc(id).get();
+
+    DocumentSnapshot<Map<String, dynamic>> getUserCurrent =
+        await usersCollections.doc(uid).get();
 
     List newFollowers = [];
     List newFollowing = [];
 
-    Map<String, dynamic>? data = get.data();
+    Map<String, dynamic>? data = getUser.data();
+    Map<String, dynamic>? dataCurrent = getUserCurrent.data();
 
-    if (data != null) {
-      List followers = data['followers'] as List;
-      List following = data['following'] as List;
+    if (data != null && dataCurrent != null) {
+      log(data['following'].toString());
+
+      List followers = data['followers'];
+      List following = dataCurrent['following'];
 
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -118,7 +126,6 @@ class UsersProvider {
               map: map,
               removeFollowingOrFollowers: true,
             );
-            _addOrDeleteFriends(id, false);
             return;
           }
         }
@@ -126,12 +133,11 @@ class UsersProvider {
           map: map,
           removeFollowingOrFollowers: false,
         );
-        _addOrDeleteFriends(id, true);
       }
     }
   }
 
-  Future<void> _addOrDeleteFriends(String id, bool isAdd) async {
+  Future<void> _addOrDeleteFriends(String uid, String id, bool isAdd) async {
     CollectionReference<Map<String, dynamic>> friendsCollection = firestore
         .collection('friends');
     CollectionReference<Map<String, dynamic>> usersCollection = firestore
@@ -144,7 +150,7 @@ class UsersProvider {
 
     if (data != null) {
       if (isAdd) {
-        await friendsCollection.doc(id).set({
+        await friendsCollection.doc(uid).collection('me').doc(id).set({
           'name': data['name'],
           'followers': data['followers'],
           'following': data['following'],
@@ -152,7 +158,7 @@ class UsersProvider {
           'uid': data['uid'],
         });
       } else {
-        await friendsCollection.doc(id).delete();
+        await friendsCollection.doc(uid).collection('me').doc(id).delete();
       }
     }
   }

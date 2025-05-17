@@ -55,8 +55,8 @@
         {
             "name": "All Devices",
             "configurations": [
-                "23021RAAEG-mae",
-               // "23021RAAEG-usb",
+                //"23021RAAEG-mae",
+               "23021RAAEG-usb",
                 "Windows"
             ]
         }

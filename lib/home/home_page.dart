@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:messfy/constants/constants_colors.dart';
@@ -78,9 +76,6 @@ class _HomePageState extends State<HomePage>
                                 context,
                                 route: AppRoute.profile,
                               );
-                            case 'novos':
-                              Utils.hidenSnackBar(context);
-                              Utils.goNamedRoute(context, route: AppRoute.news);
                             case 'comunidades':
                               Utils.hidenSnackBar(context);
                               Utils.goNamedRoute(

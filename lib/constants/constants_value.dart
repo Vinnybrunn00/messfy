@@ -10,3 +10,5 @@ ValueNotifier<bool> event = ValueNotifier<bool>(false);
 ValueNotifier<bool> snackBarClose = ValueNotifier<bool>(true);
 
 ValueNotifier<bool> onVisibled = ValueNotifier<bool>(false);
+
+ValueNotifier<String> uid = ValueNotifier<String>('');
