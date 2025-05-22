@@ -1,4 +1,5 @@
-import 'dart:developer';
+
+import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -67,13 +68,19 @@ class Utils {
     Navigator.of(context).pushNamed(route);
   }
 
-  //static void routeScreen(BuildContext context, {required Widget route}) {
-  //  Navigator.of(context).push(MaterialPageRoute(builder: (context) => route));
-  //}
+  static void routeScreen(BuildContext context, {required Widget route}) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => route));
+  }
 
   static String get time {
     DateTime dateTime = DateTime.now();
     String dateFormat = DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
+    return dateFormat;
+  }
+
+  static String get getHours {
+    DateTime dateTime = DateTime.now();
+    String dateFormat = DateFormat('HH:mm').format(dateTime);
     return dateFormat;
   }
 
@@ -102,7 +109,6 @@ class Utils {
                   onTap: () {
                     UsersProvider.changeName(controller.text).then((event) {
                       if (event != null) {
-                        log(event);
                         return;
                       }
                       if (!context.mounted) return;
@@ -288,5 +294,19 @@ class Utils {
         },
       },
     ];
+  }
+
+  static int get getTimeStamp {
+    DateTime dateTime = DateTime.now();
+
+    return dateTime.millisecondsSinceEpoch;
+  }
+
+  static int get setMessageId {
+    int max = 999999999;
+    int min = 100000000;
+    Random random = Random();
+    var randomNumber = random.nextInt(max - min);
+    return randomNumber;
   }
 }

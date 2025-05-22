@@ -52,7 +52,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-
       body: Container(
         padding: EdgeInsets.only(left: 10, right: 10),
         height: size.height,

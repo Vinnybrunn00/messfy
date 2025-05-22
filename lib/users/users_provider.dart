@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:messfy/utils/utils.dart';
 
 class UsersProvider {
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -190,5 +191,61 @@ class UsersProvider {
     }
 
     return mapUser;
+  }
+
+  Future<void> sendMessage(
+    String message,
+    String id,
+    String name,
+    String chatId,
+  ) async {
+    CollectionReference<Map<String, dynamic>> chat = firestore.collection(
+      'chat',
+    );
+
+    final User? currentUser = auth.currentUser;
+
+    int messageId = Utils.setMessageId;
+
+    if (currentUser != null) {
+      String uid = currentUser.uid;
+      //String docChat = '${id}__$uid';
+
+      await chat.doc(chatId).set({
+        'listUsers': [
+          {'id': id, 'photo': null, 'name': name, 'text': 'oi'},
+          {
+            'id': uid,
+            'photo': null,
+            'name': currentUser.displayName,
+            'text': 'oi',
+          },
+        ],
+      });
+
+      await chat.doc(chatId).collection('messages').doc('$messageId').set({
+        'uid': uid,
+        'messageId': messageId,
+        'name': currentUser.displayName,
+        'message': message,
+        'timestamp': Utils.getTimeStamp,
+        'time': Utils.getHours,
+      });
+    }
+  }
+
+  bool? isMe(String uid) {
+    final User? user = auth.currentUser;
+
+    bool? isMe;
+
+    if (user != null) {
+      if (user.uid == uid) {
+        isMe = true;
+      } else {
+        isMe = false;
+      }
+    }
+    return isMe;
   }
 }

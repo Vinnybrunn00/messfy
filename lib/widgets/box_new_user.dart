@@ -1,6 +1,7 @@
-import 'dart:developer';
+
 
 import 'package:flutter/material.dart';
+import 'package:messfy/chat/chat_page.dart';
 import 'package:messfy/constants/constants_colors.dart';
 import 'package:messfy/constants/constants_value.dart';
 import 'package:messfy/styles/style_app.dart';
@@ -54,86 +55,113 @@ class _BoxNewUserState extends State<BoxNewUser> {
       padding: EdgeInsets.only(top: 8),
       duration: Duration(milliseconds: 550),
       decoration: BoxDecoration(borderRadius: AppStyle.borderRadius12),
-      child: Material(
-        color: AppColors.foo,
-        borderRadius: AppStyle.borderRadius12,
-        elevation: 4,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 10, right: 10),
-                      height:
-                          isMobile.value ? size.width * .1 : size.width * .08,
-                      width:
-                          isMobile.value ? size.width * .1 : size.width * .08,
-                      decoration: BoxDecoration(
-                        color: AppColors.greyColor,
-                        borderRadius: BorderRadius.circular(
-                          isMobile.value
-                              ? size.width * .1
-                              : size.width * .08 / 2,
+      child: InkWell(
+        onTap:
+            isFollower != null
+                ? isFollower!
+                    ? () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder:
+                              (context) => ChatPage(
+                                name: widget.name,
+                                id: widget.id,
+                                chatId: '${widget.id}__${widget.uid}',
+                              ),
+                        ),
+                      );
+                    }
+                    : null
+                : null,
+        child: Material(
+          color: AppColors.foo,
+          borderRadius: AppStyle.borderRadius12,
+          elevation:
+              isFollower != null
+                  ? isFollower!
+                      ? 10
+                      : 0
+                  : 0,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
+                        height:
+                            isMobile.value ? size.width * .1 : size.width * .08,
+                        width:
+                            isMobile.value ? size.width * .1 : size.width * .08,
+                        decoration: BoxDecoration(
+                          color: AppColors.greyColor,
+                          borderRadius: BorderRadius.circular(
+                            isMobile.value
+                                ? size.width * .1
+                                : size.width * .08 / 2,
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      widget.name,
-                      style: TextStyle(
-                        color: AppColors.whiteColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 10),
-                  height:
-                      isMobile.value ? size.height * .032 : size.height * .04,
-                  width: isMobile.value ? size.width * .17 : size.width * .14,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.greenColor),
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(18),
-                    onTap:
-                        widget.isFriends
-                            ? () {}
-                            : () async {
-                              setState(() {
-                                isFollower = !isFollower!;
-                              });
-                              await user.setFollowerUser(widget.id, widget.uid);
-
-                              _isFollower();
-                            },
-                    child: Center(
-                      child: Text(
-                        widget.isFriends
-                            ? 'Messages'
-                            : isFollower != null
-                            ? isFollower!
-                                ? 'Seguindo'
-                                : 'Seguir'
-                            : '-',
+                      Text(
+                        widget.name,
                         style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.greenColor,
+                          color: AppColors.whiteColor,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 10),
+                    height:
+                        isMobile.value ? size.height * .032 : size.height * .04,
+                    width: isMobile.value ? size.width * .17 : size.width * .14,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.greenColor),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(18),
+                      onTap:
+                          widget.isFriends
+                              ? () {}
+                              : () async {
+                                setState(() {
+                                  isFollower = !isFollower!;
+                                });
+                                await user.setFollowerUser(
+                                  widget.id,
+                                  widget.uid,
+                                );
+
+                                _isFollower();
+                              },
+                      child: Center(
+                        child: Text(
+                          widget.isFriends
+                              ? 'Messages'
+                              : isFollower != null
+                              ? isFollower!
+                                  ? 'Seguindo'
+                                  : 'Seguir'
+                              : '-',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.greenColor,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

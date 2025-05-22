@@ -23,6 +23,9 @@ class AuthServices {
           await firestore.collection('users').doc(user.uid).set({
             'uid': user.uid,
             'name': Utils.capitalize(mapCredential['name']),
+            'photo': null,
+            'followers': [],
+            'following': [],
             'email': mapCredential['email'],
             'time': Utils.time,
           });
